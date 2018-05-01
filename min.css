@@ -25,12 +25,27 @@ h2{
 .intro{
 	position: fixed;
 	background-color: #00002d;
-	height: 100%;
-	width: 1680px;
+	height: 100vh;
+	width:100vw;
 	display: block;
 	z-index: 999;
 	animation: intro 0.5s linear 4s forwards;
+	
 }
+
+.avg{
+	fill: #ffffff; 
+	opacity:0.05;
+}
+
+.noData{
+	color: #fff; 
+	opacity: 0.3; 
+	font-family:'Adobe caslon Pro'; 
+	font-style: italic;
+}
+
+
 
 @keyframes intro{
 	0%{opacity: 1;}
@@ -43,6 +58,13 @@ h2{
 
 #voronoy{
 	pointer-events: none;
+}
+
+#legenda{
+	position: fixed;
+	background-color: #0d0e35;
+	display: block;
+	z-index: 996;
 }
 
 

@@ -8,18 +8,123 @@
 	<link rel="icon" href="favicon.png" type="image/x-icon"/>
 </head>
 <body>
-<div class="intro">
+
+<div id="intro" class="intro" style="display: none;">
 	<h1>Health Care in Finland</h1>
 	<h2>Efficiency of the System, Queues and Reachability</h2>
-</div>
-<div style="position: absolute; display: block; width:20px; height:880px; background-color: #fff; margin-left: 610px; opacity:0.05; pointer-events: none;"></div>
+	
+</div>	
+	
+	<style>
+		.avg{
+			fill: #ffffff; 
+			opacity:0.05;
+		}
+		
+		.noData{
 
-<div style = "position: fixed; background-color: #0d0e35; height: 140px; width: 1680px; display: block;z-index: 996;"></div>
-<img src="legenda.png" style="position: fixed; z-index: 998;" width="100%" height="auto">
+			fill: #fff; 
+			opacity: 0.03; 
+			font-family:'Adobe caslon Pro'; 
+			font-style: italic;
+			letter-spacing: 0.8px;
+		}
+
+		.peopleData{
+
+			fill: #fff; 
+			opacity: 0.3; 
+			font-family:'Roboto'; 
+			font-style: italic;
+			font-size: 10px;
+			letter-spacing: 0.4px;
+		}
+
+		.areaData{
+
+			fill: #fff; 
+			opacity: 1; 
+			font-family:'Roboto'; 
+			font-style: italic;
+			font-size: 10px;
+			letter-spacing: 0.4px;
+		}
+		.on{
+			animation: fadeIn 1s ease 0.5s;
+			animation-fill-mode:  forwards;
+		}
+		.off{
+			animation: fadeOut 0.8s ease 0s; 
+			animation-fill-mode:  forwards;
+		}
+		
+		@keyframes fadeIn{
+			0%{opacity: 0;}
+			100%{opacity: 1;}
+		}
+		
+		@keyframes fadeOut{
+			0%{opacity: 1;}
+			100%{opacity: 0;}
+		}
+		
+		.title{
+			fill: #fff;
+			font-family:'Adobe caslon Pro';
+			font-style: bold;
+			font-size: 22px;
+			letter-spacing: 1px;
+		}
+		
+		.subtitle{
+			fill: #00002d;
+			font-family:'Roboto';
+			font-style: bold;
+			font-size: 12px;
+			letter-spacing: 1px;
+		}
+
+	</style>
+
+
+<svg id="canvas" style="position:absolute; margin-top: 0px; z-index: -10;"  height="1000">
+	<g id = "showData" style="opacity: 0;"></g>
+</svg>
+<svg id="selectors" style="position:absolute; margin-top: 0px; z-index: 995;"  height="1000"></svg>
+
+<img src="assets/viz1.png" style="z-index: 999; position:fixed; margin-top: 14px; margin-left: 110px" width="200" height="auto"/>
+<img src="assets/viz2.png" style="z-index: 999; position:fixed; margin-top: 16px; margin-left: 530px" width="190" height="auto"/>
+<img src="assets/viz3.png" style="z-index: 999; position:fixed; margin-top: 16px; margin-left: 750px" width="820" height="auto"/>
+
+<svg id="legenda" style="z-index: 998;"  height="135"> </svg>
+
+
+
+
+<!--<p style="position: absolute; margin-top: 835px; margin-left: 687px; color: #fff; opacity: 0.3; font-family:'Adobe caslon Pro'; font-style: italic;">no data available about quewing factor</p>-->
+
+<!--<div style = "position: fixed; background-color: #0d0e35; height: 8vw; width: 1680px; display: block;z-index: 996;"></div>
+<div style = "position: fixed; background-color: #fff; opacity:0.7; margin-top: 8vw; height: 2px; width: 1680px; display: block;z-index: 996;"></div>
+
+<img src="legenda.png" style="position: fixed; z-index: 998;" width="100%" height="auto">-->
+
+
+<!--
+<div id="legenda"></div>
+-->
+
 	<script src="d3.v3.min.js"></script>
 	<script>
 		
+
 		
+		
+		var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+	
+	
+		
+			
 		
 		var lineHeight = function(d, i) { return i * 40 + 168; };
 		var lineHeightTitles = function(d, i) { return i * 40 + 170.15; };
@@ -31,12 +136,38 @@
 		var ID = function(d) { return d.order; };
 		
 		
+		
+		var legenda = d3.select("#legenda");
+function viz(){		
+	
+		legenda.attr("width",w);
+		
 		d3.json("hospitalData.json", function (data){
-			   var canvas = d3.select("body").append("svg")
-							.attr("width", 1680)
-							.attr("height", 1000);
+			  var canvas = d3.select("#canvas")
+//			  				.attr("viewBox", "0 0 1680 1000")
+//  							.attr("preserveAspectRatio", "xMinYMin meet")
+			  				.attr("width", w)
+							.attr("height", h*1.2);
+			
+//			   var canvas = d3.select("body").append("svg")
+//							.attr("width", 1680)
+//							.attr("height", 1000);
 		
 		
+			var showData = d3.select("#showData");
+			
+			
+			
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			   canvas.selectAll("ellipse")
 				    .data(data)
@@ -72,9 +203,9 @@
 					.data(data)
 					.enter()
 						.append("line")
-						.attr("x1", function(d){return marginLeft - d.area/1000})
+						.attr("x1", function(d){return marginLeft - d.area/800})
 						.attr("y1", lineHeight)
-						.attr("x2", function(d){return marginLeft + d.area/1000})
+						.attr("x2", function(d){return marginLeft + d.area/800})
 						.attr("y2", lineHeight)
 						.style("stroke-width", 1)
 						.style("stroke", "white");
@@ -118,13 +249,14 @@
 				canvas.selectAll("text")
 					.data(data)
 					.enter()
-						.append("text")
+					.append("text")
 						.attr("x", marginLeft*2.37)
 						.attr("y", function(d, i) { return i * 40 + 171 } )
 						.text(function (d) {return d.nameEU})
 						.style("text-anchor", "middle")
 						.style("fill", "#fff")
-						.style("font-family", "Big Caslon")
+						.style("font-family", "Roboto")
+						.style("font-weight", "100")
 						.style("letter-spacing", 1);
 			
 			
@@ -140,6 +272,39 @@
 						.attr("width", function(d){ return d.totalW_P*100})
 						.attr("fill", "#cf9c00");
 				
+//			canvas.selectAll("waitingBar")
+//					.data(data)
+//					.enter()
+//					.append("text")
+//						.attr("x", marginLeft*3.45)
+//						.attr("y", function(d, i){	return i * 40 + 160})
+//						.text(function(d) { if(d.nameEU == Åland Islands){ return "no data"} })
+//						.attr("fill", "#cf9c00");
+			
+			
+			
+			
+			canvas.selectAll("text2")
+				.data(data)
+				.enter()
+				.append("text")
+					.attr("x", 700)
+					.attr("y", 850 )
+					.attr("class", "noData" )
+					.text("no data available about quewing factor");
+					
+			
+			
+			
+			//AVG PHYSICIANS
+			
+				canvas.append("rect")
+					.attr("x", 610)
+					.attr("y",0)
+					.attr("width",20)
+					.attr("height",902)
+					.attr('class',"avg");
+
 			
 			//Quantity of Physicians
 			
@@ -200,9 +365,9 @@
 						.attr("cx", marginLeft * 2.95)
 						.attr("cy", lineHeightPhysiciansV)
 						.attr("r", 4)
-						.attr("fill", "none")
+//						.attr("fill", "none")
 						.attr("stroke-width",1.8)
-						.attr("stroke", "#5f556d")
+						.attr("fill", "#5f556d")
 						.style("opacity", function(d){
 					if(d.physicianVacant>0){
 						return 1;
@@ -218,9 +383,9 @@
 						.attr("cx", marginLeft * 3.10)
 						.attr("cy", lineHeightPhysiciansV)
 						.attr("r", 4)
-						.attr("fill", "none")
+//						.attr("fill", "none")
 						.attr("stroke-width",1.8)
-						.attr("stroke", "#5f556d")
+						.attr("fill", "#5f556d")
 						.style("opacity", function(d){
 					if(d.physicianVacant>=5.7){
 						return 1;
@@ -236,9 +401,9 @@
 						.attr("cx", marginLeft * 3.25)
 						.attr("cy", lineHeightPhysiciansV)
 						.attr("r", 4)
-						.attr("fill", "none")
+//						.attr("fill", "none")
 						.attr("stroke-width",1.8)
-						.attr("stroke", "#5f556d")
+						.attr("fill", "#5f556d")
 						.style("opacity", function(d){
 					if(d.physicianVacant>=11){
 						return 1;
@@ -247,6 +412,54 @@
 					}
 				});
 				
+		
+			
+		
+			showData.selectAll("peopleData")
+				.data(data)
+				.enter()
+				.append("text")
+					.attr("x", 190)
+					.attr("y", function(d, i) { return i * 40 + 164 } )
+					.attr("class", "peopleData")
+					.text(function(d){ return d.population + " ppl"})
+					.style("text-anchor", "end");
+			
+			showData.selectAll("areaData")
+				.data(data)
+				.enter()
+				.append("text")
+					.attr("x", function(d){return marginLeft + 5 + d.area/800})
+					.attr("y", function(d, i) { return i * 40 + 175 } )
+					.attr("class", "areaData")
+					.text(function(d){ return d.area + " sq. km"})
+					.style("text-anchor", "start");
+		
+			
+			
+			
+	
+			
+			
+			
+		/*function giveData(){	
+			}
+			
+			
+			function showCoords(event) {
+
+				var mouseX = event.clientX;
+				var mouseY = event.clientY;	
+				console.log(mouseY,mouseX);
+				
+				if(mouseX < 100){ 
+					
+					console.log(mouseY,mouseX);
+				}
+			}
+			
+			
+			window.onmousemove = showCoords(event);*/
 			
 			
 			
@@ -400,41 +613,66 @@
 //						.on("mouseout", function(){this.style.opacity=0;});
 ////document.getElementById('region1').style.opacity='0.5' d.order.toString()
 			
-			
-	
-	
-						
-						
+			//DEFINE MARGIN TOP
+			d3.select('#canvas').style('margin-top', h/15);
+			d3.select('#map').style('margin-top', h/5.2);
 						
 			   });
 
+	
 		//no D3
+	console.log(w,h);
+}
+		
+		
+	
+		
+	d3.select('#map')
+		.attr('viewBox', function(){return 0 +" "+ 0 +" "+" "+ w +" "+ h})
+		.style('enable-background', function(){return "new"+" "+ 0 +" "+ 0 +" "+" "+ w +" "+ h})
+		.attr('width', w)
+		.attr('height', h);
 		
 
 		
+		
+	window.onresize = function(){
+			d3.select('svg').selectAll('*').remove();
+//			d3.select('#canvas').style('margin-top', h/15);
+			
+			w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+			h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		
+		d3.select('#map')
+		.attr('viewBox', function(){return 0 +" "+ 0 +" "+" "+ w +" "+ h})
+		.style('enable-background', function(){return "new"+" "+ 0 +" "+ 0 +" "+" "+ w +" "+ h})
+		.attr('width', w)
+		.attr('height', h)
+		.style('margin-top', h/5.2);
+		 
+		
+		
+			
+//			console.log(w,h);
+			viz();
+		
+//		document.reload();
+		}
 	</script>
 	<script src="min.js"></script>
 	
 
 	
 	
-	<object data="map.svg" width="50000" height="3200" type="image/svg+xml" />
+<!--	<object data="map.svg" width="50000" height="3200" type="image/svg+xml" />
 	<div style=" position:absolute; margin-top: -874.5px;">
-	<!--<div style=" position:absolute; margin-top: 130.5px;">-->
+	<div style=" position:absolute; margin-top: 130.5px;">
 	<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)       189.959     298.0925 viewBox="0 0 189.959 596.185/2" -->
+
 <svg version="1.1" id="map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	  width="1600" height="800" xml:space="preserve" >
+	  viewBox="0 0 1600 800" style="enable-background:new 0 0 1600 800; position: fixed;" xml:space="preserve" >
 <style type="text/css">
-	.Ombra_x0020_esterna{fill:none;}
-	.Angoli_x0020_arrotondati_x0020_2_x0020_pt{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
-	.Riflessione_x0020_X_x0020_dinamica{fill:none;}
-	.Smusso_x0020_morbido{fill:url(#SVGID_1_);}
-	.Crepuscolo{fill:#FFFFFF;}
-	.Fogliame_GS{fill:#FFDD00;}
-	.Pompadour_GS{fill-rule:evenodd;clip-rule:evenodd;fill:#51AEE2;}
-	
-	
 	
 		
 		#region1,#region2,#region3,#region4,#region5,#region6,#region7,#region8,#region9,#region10,#region11,#region12,#region13,#region14,#region15,#region16,#region17,#region18,#region19{opacity: 0;} 
@@ -445,16 +683,8 @@
 	.st3{fill:#CF9C01;}
 	.st4{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:0;}
 </style>
-<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-170.4225" y1="0" x2="-169.7154" y2="0.7071">
-	<stop  offset="0" style="stop-color:#E6E6EB"/>
-	<stop  offset="0.1738" style="stop-color:#E2E2E6"/>
-	<stop  offset="0.352" style="stop-color:#D5D4D8"/>
-	<stop  offset="0.5323" style="stop-color:#C0BFC2"/>
-	<stop  offset="0.7139" style="stop-color:#A4A2A4"/>
-	<stop  offset="0.8949" style="stop-color:#828282"/>
-	<stop  offset="1" style="stop-color:#6B6E6E"/>
-</linearGradient>
-<g id="all" transform="translate(1100,30) scale(1.2)">
+
+<g id="all" transform="translate(1100,0) scale(1.01)">
 
 
 <g id="Livello_1">
@@ -8100,6 +8330,8 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		</g>
 		
 	</g>
+	<path class="st4" d="M128.181,343.593c-0.204,0.22-0.27,0.323-0.088,0.586c0.182,0.263,0.874,0.519,1.169,0.763
+		c0.1-0.302,0.361-0.478,0.377-0.82s-0.208-0.726-0.274-1.071C129.059,343.229,128.385,343.373,128.181,343.593z"/>
 	<path id="path6019_2_" inkscape:connector-curvature="0" class="st4" d="M165.361,145.205"/>
 	<path id="path3830_4_" inkscape:connector-curvature="0" class="st4" d="M175.633,323.383"/>
 	<path id="path3830_3_" inkscape:connector-curvature="0" class="st4" d="M175.206,324.529"/>
@@ -8117,7 +8349,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 	<path id="polygon5137_2_" inkscape:connector-curvature="0" class="st4" d="M133.136,374.545"/>
 </g>
 <g id="Livello_2">
-	<g id="region16" onmouseover="document.getElementById('data16').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data16').style.opacity=0; this.style.opacity=0;">
+	<g id="region16" onmouseover="document.getElementById('data16').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data16').style.opacity=0; this.style.opacity=0;">
 		<path id="_51738304_7_" class="st4" d="M60.12,542.901c-0.396-0.119-0.792-0.237-1.188-0.355
 			c-0.139-1.771-0.251-3.544-0.366-5.316c0.313,0.004,0.626,0.009,0.938,0.013c0.558,0.905,1.116,1.809,1.654,2.726
 			C60.813,540.946,60.466,541.923,60.12,542.901z"/>
@@ -8372,7 +8604,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 			c3.161-0.751,6.313-1.534,9.457-2.352c-0.834,1.255-1.676,2.5-2.502,3.763c0.248,0.594,0.554,1.32,0.793,1.88
 			s0.418,0.96,0.641,1.486C101.608,566.388,100.652,567.307,99.945,568.329z"/>
 	</g>
-	<path id="region12" onmouseover="document.getElementById('data12').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data12').style.opacity=0; this.style.opacity=0;" inkscape:connector-curvature="0" class="st4" d="M67.905,503.207c0.271,0.166,0.765,0.387,0.919,0.63
+	<path id="region12" onmouseover="document.getElementById('data12').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data12').style.opacity=0; this.style.opacity=0;" inkscape:connector-curvature="0" class="st4" d="M67.905,503.207c0.271,0.166,0.765,0.387,0.919,0.63
 		c0.154,0.243,0.133,0.46,0.17,0.688c0.038,0.228,0.16,0.313,0.078,0.556c-0.082,0.243-0.4,0.668-0.582,0.833
 		c-0.181,0.165-0.46,0.077-0.599,0.09c-0.139,0.013-0.254,0.124-0.295,0.009c-0.197-0.55-0.337-1.112-0.435-1.699
 		c-0.03-0.178,0.137-0.297,0.223-0.488C67.47,503.635,67.742,503.378,67.905,503.207L67.905,503.207L67.905,503.207z M71.431,478.73
@@ -8410,7 +8642,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-0.628-0.601-1.255-1.202-1.883-1.803c-1.13,0.886-2.261,1.772-3.391,2.658c-0.071-1.508-0.139-3.017-0.209-4.525
 		c-0.701,0.574-1.405,1.144-2.103,1.722c-0.631,0.023-1.215,0.157-1.87,0.07c-0.396-0.587-1.365-2.04-1.709-2.553
 		c-0.344-0.512,0.344,0.512,0,0C67.936,510.945,68.329,511.501,68.208,511.428z"/>
-	<g id="region4" onmouseover="document.getElementById('data4').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data4').style.opacity=0; this.style.opacity=0;">
+	<g id="region4" onmouseover="document.getElementById('data4').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data4').style.opacity=0; this.style.opacity=0;">
 		<path class="st4" d="M148.724,372.375c-0.921-2.85-1.841-5.7-2.761-8.55c-0.804-0.328-1.608-0.655-2.412-0.983
 			c-0.282-1.208-0.564-2.416-0.845-3.625c-0.589-0.318-1.179-0.636-1.768-0.954c-0.531-2.17-1.062-4.34-1.593-6.511
 			c-3.177-2.181-6.362-4.351-9.545-6.523c-0.52,0.858-1.039,1.715-1.559,2.573c-0.051,1.357-0.102,2.715-0.152,4.072
@@ -8430,7 +8662,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		<path class="st4" d="M129.172,344.929c-0.164-0.266-0.868-0.516-1.15-0.755c-0.101,0.475-0.179,0.96-0.241,1.443
 			c0.294-0.072,0.9,0.015,1.119-0.121C129.119,345.36,129.335,345.196,129.172,344.929z"/>
 	</g>
-	<g id="region7" onmouseover="document.getElementById('data7').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data7').style.opacity=0; this.style.opacity=0;">
+	<g id="region7" onmouseover="document.getElementById('data7').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data7').style.opacity=0; this.style.opacity=0;">
 		<path class="st4" d="M105.28,367.068c0.135-0.205,0.469-0.374,0.516-0.638c0.145-0.81,0.089-1.622,0.172-2.434
 			c-0.389-0.355-0.781-0.687-1.156-1.065c-0.08,0.426-0.162,0.506-0.248,1.012c-0.086,0.505-0.503,1.333-0.452,1.948
 			c0.051,0.615,0.567,1.094,0.737,1.676C104.996,367.386,105.145,367.272,105.28,367.068z"/>
@@ -8520,7 +8752,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 			c0.404-1.472,0.807-2.944,1.212-4.416c-1.136-2.125-2.269-4.253-3.399-6.381c-0.454,0.145-0.908,0.29-1.362,0.435
 			c-0.504-0.923-1.007-1.846-1.51-2.77c0.738-0.526,1.476-1.05,2.214-1.575C126.136,373.405,126.725,373.905,127.315,374.406z"/>
 	</g>
-	<g id="region2" onmouseover="document.getElementById('data2').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data2').style.opacity=0; this.style.opacity=0;">
+	<g id="region2" onmouseover="document.getElementById('data2').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data2').style.opacity=0; this.style.opacity=0;">
 		<path class="st4" d="M154.757,303.303c0.574,0.371,1.147,0.743,1.721,1.114c0.458-0.377,0.917-0.753,1.375-1.131
 			c-0.408-1.318-0.816-2.636-1.225-3.954c0.524-0.17,1.048-0.34,1.572-0.508c0.673,0.467,1.347,0.934,2.02,1.401
 			c0.65-0.311,1.295-0.622,1.949-0.933c-0.072-0.35,0.11-0.704-0.042-1.044c-0.152-0.34-0.572-0.513-0.785-0.812
@@ -8579,7 +8811,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 			c1.13-0.121,0.687-0.003,0.718-0.081c0.423-1.078,0.866-2.082,1.309-3.134c-0.511-1.019-1.031-2.036-1.559-3.047
 			c1.739-0.961,3.483-1.91,5.214-2.885C269.479,263.022,270.599,262.951,271.741,262.982z"/>
 	</g>
-	<g id="region17" onmouseover="document.getElementById('data17').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data17').style.opacity=0; this.style.opacity=0;">
+	<g id="region17" onmouseover="document.getElementById('data17').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data17').style.opacity=0; this.style.opacity=0;">
 		<path class="st4" d="M224.716,530.699c-0.513-1.092-1.03-2.183-1.549-3.272c-0.819-0.022-1.638-0.05-2.456-0.078
 			c-0.456-0.825-0.911-1.65-1.366-2.476c-1.064,0.184-2.127,0.374-3.188,0.577c-0.959-0.439-1.921-0.873-2.886-1.3
 			c-0.368-0.631-0.737-1.262-1.105-1.893c-1.242-0.221-2.483-0.444-3.725-0.668c-0.393-0.683-0.787-1.367-1.18-2.05
@@ -8616,7 +8848,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 			c-0.115-1.388-0.231-2.776-0.346-4.164c-0.381-0.109-0.763-0.219-1.144-0.328C205.555,547.382,205.413,548.215,205.267,549.046z"
 			/>
 	</g>
-	<g id="region19" style="fill:black" onmouseover="document.getElementById('data19').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data19').style.opacity=0; this.style.opacity=0;">
+	<g id="region19" style="fill:black" onmouseover="document.getElementById('data19').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data19').style.opacity=0; this.style.opacity=0;">
 		<path class="st4" d="M178.523,560.21c-0.31-0.082-0.325,0.363-0.562,0.472c-0.237,0.11-0.655,0.1-0.84,0.359
 			c-0.185,0.259-0.136,0.743-0.175,1.044c-0.039,0.301,0.08,0.524,0.076,0.811c0.698,0.058,1.381,0.135,2.084,0.194
 			c0.206-0.392,0.801-0.781,0.879-1.19c0.078-0.409-0.201-0.607-0.409-0.896C179.368,560.717,178.833,560.292,178.523,560.21z"/>
@@ -8693,7 +8925,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 			c0.137-0.261,0.002-0.45,0.043-0.631c0.041-0.182,0.21-0.194,0.206-0.321c-0.018-0.486,0.106-0.872-0.045-1.35
 			c-0.151-0.478-0.668-0.628-0.866-1.157C172.117,558.431,172.035,557.636,171.875,557.052z"/>
 	</g>
-	<path id="region1" onmouseover="document.getElementById('data1').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data1').style.opacity=0; this.style.opacity=0;" class="st4" d="M163.311,271.382c0.894-0.998,2.158-1.929,3.138-2.9c0.065-0.832,0.088-1.659,0.128-2.489
+	<path id="region1" onmouseover="document.getElementById('data1').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data1').style.opacity=0; this.style.opacity=0;" class="st4" d="M163.311,271.382c0.894-0.998,2.158-1.929,3.138-2.9c0.065-0.832,0.088-1.659,0.128-2.489
 		c2.976-0.771,5.966-1.44,8.992-1.987c2.41-2.108,4.834-4.198,7.303-6.237c0.384,1.645,0.758,3.292,1.112,4.943
 		c5.15-0.077,10.283,0.07,15.426,0.328c1.699-0.664,3.398-1.328,5.1-1.985c2.158-4.063,4.322-8.123,6.503-12.174
 		c0.783,0.337,1.563,0.679,2.343,1.019c0.575-0.3,1.15-0.601,1.726-0.9c0.924,1.952,1.819,3.915,2.675,5.898
@@ -8744,7 +8976,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c0.435-0.18,0.871-0.259,1.291-0.485c0.42-0.226,0.582-0.917,1.016-1.076c0.696-0.254,1.546-0.126,2.264-0.374
 		c0.531,0.383,1.044,0.75,1.602,1.077c0.473-0.163,0.929-0.639,1.412-0.698c0.483-0.059,0.775,0.323,1.211,0.389
 		c0.048,0.007-0.068,0.098-0.075,0.11C161.966,273.429,162.417,272.38,163.311,271.382z"/>
-	<path id="region3" onmouseover="document.getElementById('data3').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data3').style.opacity=0; this.style.opacity=0;" class="st4" d="M248.003,364.262c5.401-1.078,10.799-2.168,16.196-3.266c1.138,3.074,2.266,6.152,3.392,9.23
+	<path id="region3" onmouseover="document.getElementById('data3').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data3').style.opacity=0; this.style.opacity=0;" class="st4" d="M248.003,364.262c5.401-1.078,10.799-2.168,16.196-3.266c1.138,3.074,2.266,6.152,3.392,9.23
 		c0.724-0.868,1.45-1.735,2.176-2.601c1.361,0.118,2.723,0.236,4.084,0.355c-0.097-0.102-0.194-0.203-0.291-0.305
 		c1.74-1.357,3.482-2.713,5.227-4.065c1.835-5.169,3.658-10.342,5.415-15.538c-0.645-2.859-1.286-5.72-1.929-8.579
 		c-2.962-2.143-5.913-4.3-8.863-6.46c-0.864-2.424-1.727-4.849-2.597-7.271c-0.03-1.324-0.066-2.647-0.101-3.971
@@ -8767,7 +8999,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c0.855,0.592,1.71,1.184,2.565,1.776c0.057,4.079,0.113,8.157,0.166,12.236c0.592,0.792,1.211,1.565,1.774,2.378
 		c2.494,0.767,4.582,2.063,7.187,2.634s5.517,0.409,8.217,0.754c3.117,2.296,6.965,4.32,9.793,6.82
 		c2.828,2.5,4.396,5.384,6.921,8.026c1.338-3.614,2.78-7.198,4.169-10.796C240.715,362.842,244.358,363.553,248.003,364.262z"/>
-	<path id="region6" onmouseover="document.getElementById('data6').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data6').style.opacity=0; this.style.opacity=0;" class="st4" d="M242.384,379.281c-0.35,0.565-0.7,1.13-1.049,1.695c0.234,2.142,0.467,4.283,0.7,6.425
+	<path id="region6" onmouseover="document.getElementById('data6').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data6').style.opacity=0; this.style.opacity=0;" class="st4" d="M242.384,379.281c-0.35,0.565-0.7,1.13-1.049,1.695c0.234,2.142,0.467,4.283,0.7,6.425
 		c0.827,0.521,1.654,1.044,2.482,1.565c0.033,1.258,0.067,2.515,0.101,3.772c-0.718,1.445-1.434,2.891-2.156,4.334
 		c0.594,0.57,1.188,1.141,1.783,1.711c1.286,2.842,2.577,5.681,3.869,8.52c1.786,1.005,3.576,2.002,5.366,2.998
 		c-1.153,0.914-2.325,1.801-3.489,2.701c1.011,1.417,2.02,2.835,3.035,4.249c-0.96,1.456-1.945,2.896-2.907,4.35
@@ -8786,7 +9018,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-1.126-3.077-2.255-6.153-3.392-9.226c-5.397,1.097-10.795,2.186-16.196,3.264c-3.644-0.708-7.287-1.419-10.932-2.125
 		c-0.826,2.105-1.653,4.209-2.479,6.314c1.068,1.262,2.137,2.523,3.206,3.785c0.834,0.064,1.669,0.128,2.503,0.191
 		c0.23,1.863,0.459,3.725,0.688,5.588C241.441,378.461,241.912,378.871,242.384,379.281z"/>
-	<path id="region5" onmouseover="document.getElementById('data5').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data5').style.opacity=0; this.style.opacity=0;" class="st4" d="M243.166,422.186c0.712-0.189,1.43-0.358,2.145-0.536c0.195-0.695,0.389-1.391,0.583-2.086
+	<path id="region5" onmouseover="document.getElementById('data5').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data5').style.opacity=0; this.style.opacity=0;" class="st4" d="M243.166,422.186c0.712-0.189,1.43-0.358,2.145-0.536c0.195-0.695,0.389-1.391,0.583-2.086
 		c1.412,0.671,2.817,1.355,4.223,2.038c0.962-1.455,1.947-2.894,2.907-4.35c-1.015-1.414-2.025-2.832-3.035-4.249
 		c1.163-0.9,2.336-1.788,3.489-2.701c-1.79-0.996-3.58-1.994-5.366-2.998c-1.292-2.839-2.583-5.678-3.869-8.52
 		c-0.594-0.57-1.188-1.14-1.783-1.711c0.722-1.443,1.439-2.889,2.156-4.334c-0.034-1.257-0.068-2.515-0.101-3.772
@@ -8810,7 +9042,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c0.334-0.739,0.668-1.477,1.003-2.216c-0.598-0.471-1.197-0.942-1.795-1.412c0.495-0.906,0.993-1.811,1.479-2.722
 		c0.654,0.079,1.305,0.175,1.957,0.268c-0.043-1.706-0.086-3.411-0.129-5.117c0.752,0.01,1.505,0.022,2.257,0.031
 		c1.369-1.478,2.758-2.934,4.144-4.395c0.547-0.153,1.094-0.306,1.64-0.459C245.346,426.835,244.258,424.509,243.166,422.186z"/>
-	<path id="region10" onmouseover="document.getElementById('data10').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data10').style.opacity=0; this.style.opacity=0;" class="st4" d="M196.319,452.891c-0.959-0.515-1.919-1.029-2.877-1.546c-1.34,0.877-2.681,1.753-4.022,2.629
+	<path id="region10" onmouseover="document.getElementById('data10').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data10').style.opacity=0; this.style.opacity=0;" class="st4" d="M196.319,452.891c-0.959-0.515-1.919-1.029-2.877-1.546c-1.34,0.877-2.681,1.753-4.022,2.629
 		c-0.76,1.628-1.521,3.256-2.282,4.883c1.188,2.328,2.371,4.659,3.553,6.991c-0.363,0.56-0.724,1.122-1.086,1.683
 		c0.235,3.074,0.472,6.148,0.696,9.223c1.093,1.739,2.189,3.477,3.283,5.215c-0.294,1.107-0.587,2.212-0.881,3.321
 		c-0.973-0.327-1.974-0.547-2.915-0.974c-0.257,0.856-0.243,0.621-0.563,1.721c-0.32,1.1-1.117,2.917-1.402,4.454
@@ -8842,7 +9074,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-0.588-0.781-1.178-1.561-1.767-2.341c-1.159,0.322-2.318,0.648-3.479,0.964c-0.296,0.486-0.593,0.972-0.889,1.457
 		c-0.823-0.374-1.632-0.76-2.465-1.123c-0.771,0.471-1.756,1.008-2.471,1.473c-0.715,0.466-1.146,0.866-1.803,1.325
 		c0.931,1.049,1.829,2.12,2.743,3.182c-0.798,0.306-1.596,0.612-2.394,0.917C197.271,448.627,196.801,450.76,196.319,452.891z"/>
-	<path id="region15" onmouseover="document.getElementById('data15').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data15').style.opacity=0; this.style.opacity=0;" class="st4" d="M137.445,541.907c0.572-0.497,1.147-0.992,1.721-1.488c0.603,0.291,1.206,0.581,1.81,0.871
+	<path id="region15" onmouseover="document.getElementById('data15').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data15').style.opacity=0; this.style.opacity=0;" class="st4" d="M137.445,541.907c0.572-0.497,1.147-0.992,1.721-1.488c0.603,0.291,1.206,0.581,1.81,0.871
 		c0.156,0.596,0.312,1.193,0.468,1.789c1.493-0.362,2.986-0.727,4.479-1.092c-0.079-0.829-0.158-1.658-0.237-2.487
 		c0.411-0.626,0.822-1.253,1.233-1.879c0.943,0.122,1.886,0.244,2.829,0.365c2.114-0.546,4.229-1.091,6.344-1.634
 		c0.877,0.3,1.753,0.602,2.63,0.901c0.536-1.108,1.071-2.218,1.606-3.326c-0.582-0.194-1.164-0.389-1.745-0.585
@@ -8861,7 +9093,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-0.364,0.359-0.728,0.717-1.092,1.076c0.048,0.695,0.096,1.39,0.145,2.085c1.374,0.746,2.749,1.492,4.125,2.236
 		c1.031-0.571,2.06-1.144,3.092-1.715c1.918,1.557,3.875,3.101,5.765,4.669c1.949,0.547,3.298,1.225,5.397,1.706
 		c2.099,0.481,4.896,0.796,7.136,1.205C136.834,540.467,137.115,541.191,137.445,541.907z"/>
-	<path id="region13" onmouseover="document.getElementById('data13').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data13').style.opacity=0; this.style.opacity=0;" class="st4" d="M267.422,477.614c-0.446,0.916-0.9,1.828-1.378,2.728c-1.443,0.348-2.889,0.686-4.33,1.044
+	<path id="region13" onmouseover="document.getElementById('data13').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data13').style.opacity=0; this.style.opacity=0;" class="st4" d="M267.422,477.614c-0.446,0.916-0.9,1.828-1.378,2.728c-1.443,0.348-2.889,0.686-4.33,1.044
 		c-1.419,1.669-2.855,3.321-4.304,4.963c-1.856,0.391-3.709,0.801-5.563,1.199c-1.652-0.186-3.306-0.353-4.961-0.511
 		c-0.417,0.907-0.833,1.813-1.25,2.72c-1.912-0.069-3.822-0.119-5.736-0.153c-0.614-0.626-1.291-1.184-1.863-1.854
 		c-0.823,1.236-0.848,1.942-1.85,3.302c-1.002,1.36-2.819,3.362-4.035,4.827c-2.287,0.172-5.178,0.661-7.295,0.689
@@ -8881,7 +9113,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		s1.114-1.983,2.355-3.646c1.548-0.604,3.176-1.461,4.738-2.203c1.537-2.241,3.016-4.508,4.453-6.811
 		c1.801-1.374,3.588-2.816,5.618-3.838c1.053-1.462,2.214-2.797,3.404-4.157c0.134-0.154,0.423-0.184,0.586-0.315
 		C277.974,474.416,272.833,475.212,267.422,477.614z"/>
-	<path id="region14" onmouseover="document.getElementById('data14').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data14').style.opacity=0; this.style.opacity=0;" class="st4" d="M158.188,506.518c0.617-0.329,1.233-0.657,1.85-0.985c0.805,0.65,1.611,1.299,2.418,1.947
+	<path id="region14" onmouseover="document.getElementById('data14').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data14').style.opacity=0; this.style.opacity=0;" class="st4" d="M158.188,506.518c0.617-0.329,1.233-0.657,1.85-0.985c0.805,0.65,1.611,1.299,2.418,1.947
 		c0.152,2.165,0.301,4.33,0.436,6.497c-1.473,0.971-2.942,1.946-4.413,2.919c-0.387,1.748-0.774,3.497-1.162,5.245
 		c0.94,1.197,1.88,2.395,2.82,3.591c-0.523,0.516-1.089,0.98-1.565,1.547c0.347,0.477,1.139,1.513,1.384,1.86
 		c0.245,0.347,0.141,0.238,0.169,0.23c0.579-0.161,1.144-0.303,1.717-0.465c1.1,1.397,2.205,2.79,3.309,4.183
@@ -8901,7 +9133,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-1.248,0.653-2.494,1.308-3.738,1.968c-0.783,3.318-1.562,6.637-2.328,9.959c-4.13,0.512-8.26,1.017-12.391,1.521
 		c-0.469-0.285-0.937-0.57-1.406-0.856c0.176,3.093,0.35,6.186,0.527,9.279c1.341,0.555,2.683,1.11,4.024,1.666
 		C158.507,505.112,158.347,505.815,158.188,506.518z"/>
-	<path id="region9" onmouseover="document.getElementById('data9').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data9').style.opacity=0; this.style.opacity=0;" class="st4" d="M93.644,457.068c1.081-1.879,2.157-3.76,3.235-5.641c0.831-0.051,1.662-0.102,2.492-0.153
+	<path id="region9" onmouseover="document.getElementById('data9').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data9').style.opacity=0; this.style.opacity=0;" class="st4" d="M93.644,457.068c1.081-1.879,2.157-3.76,3.235-5.641c0.831-0.051,1.662-0.102,2.492-0.153
 		c0.687-1.607,1.372-3.214,2.062-4.821c0.971,0.51,1.983,1.009,2.92,1.539c0.904-0.014,1.091-0.012,2.164-0.03
 		c1.073-0.018,3.033-0.054,4.275-0.075c1.725-1.023,3.372-2.074,5.068-3.107c0.746-1.49,1.492-2.98,2.246-4.466
 		c1.5,0.604,3,1.209,4.5,1.813c0.202-0.575,0.404-1.15,0.607-1.725c1.127,0.154,2.254,0.308,3.381,0.461
@@ -8924,7 +9156,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-0.803,0.583-1.605,1.16-2.408,1.74c0.164,0.837,0.327,1.674,0.489,2.512c-0.435,0.387-0.87,0.775-1.306,1.162
 		c-0.15,1.677-0.303,3.355-0.457,5.032c0.726,0.7,1.451,1.4,2.176,2.1c1.792,0.309,3.584,0.619,5.377,0.926
 		c2.036-1.954,4.074-3.906,6.108-5.863C92.384,457.103,93.014,457.085,93.644,457.068z"/>
-	<path id="region11" onmouseover="document.getElementById('data11').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data11').style.opacity=0; this.style.opacity=0;" class="st4" d="M126.593,440.865c-1.127-0.154-2.254-0.308-3.381-0.461c-0.202,0.575-0.405,1.15-0.607,1.725
+	<path id="region11" onmouseover="document.getElementById('data11').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data11').style.opacity=0; this.style.opacity=0;" class="st4" d="M126.593,440.865c-1.127-0.154-2.254-0.308-3.381-0.461c-0.202,0.575-0.405,1.15-0.607,1.725
 		c-1.5-0.604-3-1.209-4.5-1.813c-0.755,1.486-1.499,2.977-2.248,4.466c-1.675,1.031-3.347,2.066-5.016,3.106
 		c-1.536,0.019-3.071,0.038-4.607,0.056c0.029,1.773,0.06,3.547,0.083,5.32c-0.824,0.455-1.648,0.911-2.472,1.366
 		c-0.026,1.531-0.054,3.063-0.082,4.594c-0.968,0.123-1.935,0.245-2.903,0.366c-0.481,0.912-0.961,1.824-1.441,2.736
@@ -8954,7 +9186,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-1.106-0.221-2.211-0.441-3.317-0.66c-0.425-1.281-0.851-2.562-1.273-3.844c-0.602,0.132-1.204,0.266-1.806,0.4
 		c-1.153-0.727-2.306-1.454-3.46-2.179c-0.011-1.641-0.02-3.282-0.027-4.924c-0.612-0.265-1.224-0.529-1.836-0.794
 		c-0.166-1.408-0.333-2.816-0.501-4.223c-0.624-0.417-1.248-0.834-1.872-1.251C129.347,438.351,127.968,439.606,126.593,440.865z"/>
-	<path id="region8" onmouseover="document.getElementById('data8').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data8').style.opacity=0; this.style.opacity=0;" class="st4" d="M141.504,453.912c1.106,0.22,2.212,0.439,3.317,0.66c0.689-0.278,1.379-0.556,2.068-0.834
+	<path id="region8" onmouseover="document.getElementById('data8').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data8').style.opacity=0; this.style.opacity=0;" class="st4" d="M141.504,453.912c1.106,0.22,2.212,0.439,3.317,0.66c0.689-0.278,1.379-0.556,2.068-0.834
 		c1.214,1.37,2.428,2.74,3.642,4.11c0.392,1.521,0.783,3.043,1.177,4.564c-0.76,1.36-1.521,2.719-2.281,4.079
 		c-0.233-0.442-0.467-0.883-0.701-1.325c-0.708,1.151-1.416,2.301-2.123,3.452c1.853,2.463,3.705,4.927,5.557,7.391
 		c0.377,0.065,0.754,0.131,1.132,0.196c-0.001,0.374-0.002,0.748-0.003,1.122c-0.384,0.033-0.768,0.068-1.153,0.102
@@ -8985,7 +9217,7 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		c-0.289,2.253-0.582,4.506-0.874,6.759c-1.195,0.035-2.39,0.069-3.585,0.104c-0.324,0.655-0.649,1.309-0.973,1.964
 		c-1.419-0.204-2.838-0.407-4.258-0.608c-1.095,1.371-2.19,2.742-3.283,4.114c0.016,1.645,0.035,3.289,0.055,4.934
 		c1.154,0.725,2.307,1.452,3.46,2.179c0.602-0.134,1.204-0.268,1.806-0.4C140.653,451.349,141.078,452.63,141.504,453.912z"/>
-	<g id="region18" onmouseover="document.getElementById('data18').style.opacity=0.2; this.style.opacity=0.6;" onmouseout="document.getElementById('data18').style.opacity=0; this.style.opacity=0;">
+	<g id="region18" onmouseover="document.getElementById('data18').style.opacity=0.1; this.style.opacity=0.5;" onmouseout="document.getElementById('data18').style.opacity=0; this.style.opacity=0;">
 		<path id="_51725088_7_" class="st4" d="M38.792,542.543c0.295,0.583,0.564,1.368,0.893,1.882c0.328,0.514,0.917,0.303,1.177,0.813
 			c0.26,0.51-0.132,1.148,0.154,1.799s0.899,1.511,1.271,2.189c-0.439,1.238-0.899,2.448-1.348,3.675
 			c-0.881,0.103-1.764,0.213-2.644,0.309c-0.562-0.711-0.959-1.532-1.589-2.194c-0.239-0.252-0.688-0.074-0.979-0.237
@@ -9074,65 +9306,65 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 		<path id="path215_6_" inkscape:connector-curvature="0" class="st4" d="M33.915,539.397"/>
 		<path id="path215_5_" inkscape:connector-curvature="0" class="st4" d="M34.1,539.276"/>
 		</g>
-		<g transform="translate(-900,-26) scale(0.834)">
+		<!--<g transform="translate(-900,-26) scale(0.834)">
 				<rect id="data1" x="0" y="25" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region1').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region1').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region1').style.opacity=0;"></rect>					
 				<rect id="data2" x="0" y="65" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region2').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region2').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region2').style.opacity=0;"></rect>
 				<rect id="data3" x="0" y="105" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region3').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region3').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region3').style.opacity=0;"></rect>
 				<rect id="data4" x="0" y="145" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region4').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region4').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region4').style.opacity=0;"></rect>
 				<rect id="data5" x="0" y="185" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region5').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region5').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region5').style.opacity=0;"></rect>
 				<rect id="data6" x="0" y="225" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region6').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region6').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region6').style.opacity=0;"></rect>
 				<rect id="data7" x="0" y="265" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region7').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region7').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region7').style.opacity=0;"></rect>
 				<rect id="data8" x="0" y="305" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region8').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region8').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region8').style.opacity=0;"></rect>
 				<rect id="data9" x="0" y="345" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region9').style.opacity=0.55" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region9').style.opacity=0.55" 
 				onmouseout="this.style.opacity=0; document.getElementById('region9').style.opacity=0;"></rect>
 				<rect id="data10" x="0" y="385" height="22" width="1050" fill="#fff" style="opacity: 0;" 	
-				onmouseover="this.style.opacity=0.2; document.getElementById('region10').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region10').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region10').style.opacity=0;"></rect>
 				<rect id="data11" x="0" y="425" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region11').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region11').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region11').style.opacity=0;"></rect>
 				<rect id="data12" x="0" y="465" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region12').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region12').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region12').style.opacity=0;"></rect>
 				<rect id="data13" x="0" y="505" height="22" width="1050" fill="#fff" style="opacity: 0;" 	
-				onmouseover="this.style.opacity=0.2; document.getElementById('region13').style.opacity=0.5;" 	
+				onmouseover="this.style.opacity=0.1; document.getElementById('region13').style.opacity=0.5;" 	
 				onmouseout="this.style.opacity=0; document.getElementById('region13').style.opacity=0;"></rect>
 				<rect id="data14" x="0" y="545" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region14').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region14').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region14').style.opacity=0;"></rect>
 				<rect id="data15" x="0" y="585" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region15').style.opacity=0.5;" 	
+				onmouseover="this.style.opacity=0.1; document.getElementById('region15').style.opacity=0.5;" 	
 				onmouseout="this.style.opacity=0; document.getElementById('region15').style.opacity=0;"></rect>
 				<rect id="data16" x="0" y="625" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region16').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region16').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region16').style.opacity=0;"></rect>
 				<rect id="data17" x="0" y="665" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region17').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region17').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region17').style.opacity=0;"></rect>
 				<rect id="data18" x="0" y="705" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region18').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region18').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region18').style.opacity=0;"></rect>
 				<rect id="data19" x="0" y="745" height="22" width="1050" fill="#fff" style="opacity: 0;" 
-				onmouseover="this.style.opacity=0.2; document.getElementById('region19').style.opacity=0.5;" 
+				onmouseover="this.style.opacity=0.1; document.getElementById('region19').style.opacity=0.5;" 
 				onmouseout="this.style.opacity=0; document.getElementById('region19').style.opacity=0;"></rect>
-		</g>
+		</g>-->
 		<g id="voronoy" class="st0">
 			<path vector-effect="none" class="st2" d="M-170.216,2.771h842.158v595.605h-842.158V2.771"/>
 			<g id="tessellation">
@@ -9598,162 +9830,155 @@ AAAAKOt69epFoihyRkYG+/n5aR0OAAAAAABAmfZ/XQyQBlaIqeEAAAAASUVORK5CYII=" transform=
 					c-1.567,0-2.834-1.269-2.834-2.834c0-1.567,1.267-2.834,2.834-2.834C201.259,536.925,202.529,538.192,202.529,539.759"/>
 			</g>
 		</g>
-		
 </g>
+
+
+
 
 </g><!--all--->
 </svg>
 
-
+<script> 
+//DRAW D3 STUFF
+	viz(); 
+//DRAW SELECTORS
+	
+	
+	d3.json("hospitalData.json", function (data){
+	d3.select('#selectors')
+		.style('margin-top', h/15)
+		.attr('height', h*1.2)
+		.attr('width', w/1.5);
+	
+	var selectors = d3.select("#selectors");	
+		
+	selectors.selectAll("rect")
+		.data(data)
+		.enter()
+			.append("rect")
+			.attr("id", function(d){ return "data" + d.order })
+			.attr("x", 0)
+			.attr("y", lineHeightElements)
+			.attr("height", 22)
+			.attr("width", 1050)
+			.attr("fill", "#fff")
+			.style("opacity", 0)
+			.on("mouseover", function(d){
+								d3.select(this)
+									.style("opacity", 0.1);
+							
+								d3.select("#region" + d.order)
+									.style("opacity",0.5);
+								
+	
+			})
+			.on("mouseout", function(d){
+								d3.select(this)
+									.style("opacity", 0);
+									
+								d3.select("#region" + d.order)
+									.style("opacity", 0);
+			});
+		
+	});
+	
+			
+</script>
+<script type="text/javascript">
+	var mouse = {
+				mouseX : undefined,
+				mouseY : undefined
+			}
+			
+			
+			window.addEventListener("mousemove", function(event){
+				
+				mouse.mouseX = event.x;
+				mouse.mouseY = event.y;
+				
+				
+				if(mouse.mouseX < 400) {
+					
+					document.getElementById("showData").classList.add("on");
+					document.getElementById("showData").classList.remove("off");
+					
+					}else{
+						
+					document.getElementById("showData").classList.add("off");
+					document.getElementById("showData").classList.remove("on");
+						
+					}
+			});
+	
+	
+	
+		var legendaBtm = d3.select('#legendaBtm');
+		var titleTopMargin = 61;
+		
+	
+/*				legenda.append("line")
+					.attr("x1", 800)
+					.attr("y1", 0)
+					.attr("x2", 800)
+					.attr("y2", 130)
+						.style("stroke-width", 1)
+						.style("stroke", "white");
+					
+				legenda.append("line")
+					.attr("x1", 300)
+					.attr("y1", 0)
+					.attr("x2", 300)
+					.attr("y2", 130)
+						.style("stroke-width", 1)
+						.style("stroke", "white");*/
+	
+			legenda.append("line")
+					.attr("x1", 0)
+					.attr("y1", 135)
+					.attr("y2", 135)
+					.attr("x2", w)
+					.attr("id", "legendaBtm")
+						.style("stroke-width", 3)
+						.style("stroke", "white");
+	
+	
+	
+	
+	
+	
+			legenda.append("rect")
+				.attr("x", 400)
+				.attr("y", titleTopMargin)
+				.attr("width", 150)
+				.attr("height", 80)
+					.style("fill", "#fff")
+					.style("opacity", 0.2);
+	
+			legenda.append("text")
+				.text("Region")
+					.attr("class", "title")
+					.attr("x", 440)
+					.attr("y", function() {return titleTopMargin + 25} );
+	
+			legenda.append("text")
+				.text("from northernmost")
+					.attr("class", "subtitle")
+					.attr("x", 475)
+					.attr("y", function() {return titleTopMargin + 45})
+						.style("text-anchor", "middle");  
+	
+			legenda.append("text")
+				.text("to southernmost")
+					.attr("class", "subtitle")
+					.attr("x", 475)
+					.attr("y", function() {return titleTopMargin + 60})
+						.style("text-anchor", "middle");  
+	
+	
+	
+</script>
 	</div>
 
 	
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
