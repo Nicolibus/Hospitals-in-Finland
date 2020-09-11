@@ -32,11 +32,11 @@
 
 		.peopleData{
 
-			fill: #fff; 
-			opacity: 0.3; 
+			fill: #5b5b87; 
+			opacity: 1; 
 			font-family:'Roboto'; 
-			font-style: italic;
-			font-size: 10px;
+			font-style: bold;
+			font-size: 12px;
 			letter-spacing: 0.4px;
 		}
 
@@ -45,8 +45,8 @@
 			fill: #fff; 
 			opacity: 1; 
 			font-family:'Roboto'; 
-			font-style: italic;
-			font-size: 10px;
+			font-style: bold;
+			font-size: 12px;
 			letter-spacing: 0.4px;
 		}
 		.on{
@@ -81,7 +81,7 @@
 			font-family:'Roboto';
 			font-style: bold;
 			font-size: 12px;
-			letter-spacing: 1px;
+			letter-spacing: 0.2px;
 		}
 
 	</style>
@@ -94,8 +94,10 @@
 
 <img src="assets/viz1.png" style="z-index: 999; position:fixed; margin-top: 14px; margin-left: 110px" width="200" height="auto"/>
 <img src="assets/viz2.png" style="z-index: 999; position:fixed; margin-top: 16px; margin-left: 530px" width="190" height="auto"/>
-<img src="assets/viz3.png" style="z-index: 999; position:fixed; margin-top: 16px; margin-left: 750px" width="820" height="auto"/>
-
+<img src="assets/viz4.png" style="z-index: 999; position:fixed; margin-top: 60px; margin-left: 680px" width="300" height="auto" id="quewingFactor"/>
+<img src="assets/viz3.png" style="z-index: 999; position:fixed; margin-top: 16px;" width="500" height="auto" id="voronoyLegenda"/>
+<img src="assets/legenda2.png" style="z-index: 999; position:fixed; margin-top: 16px; margin-left: 750px" width="820" height="auto" id = "narrowLegenda">
+<!--margin-left: 750px-->
 <svg id="legenda" style="z-index: 998;"  height="135"> </svg>
 
 
@@ -138,7 +140,28 @@
 		
 		
 		var legenda = d3.select("#legenda");
+		
+		
+		
+		
+		
+		if(w<=1680){
+			d3.select("#voronoyLegenda").style("display","none");
+			d3.select("#quewingFactor").style("display","none");
+			
+			
+		}else if(w>1680){
+			d3.select("#narrowLegenda").style("display","none");
+			d3.select("#voronoyLegenda").style("margin-left", function() { return w/1.6 + "px" });
+		}
+		
+		
+		
+		
 function viz(){		
+	
+		/*document.getElementById("voronoyLegenda").style.marginLeft = w/2.24;*/
+	
 	
 		legenda.attr("width",w);
 		
